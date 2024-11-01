@@ -1,6 +1,6 @@
 {
   "name": "@storeforge/react-sandbox",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React component for \"sandboxing\" third party content within an iframe",
   "license": "MIT",
   "repository": "storeforgedev/react-sandbox",
