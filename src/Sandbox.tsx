@@ -39,7 +39,7 @@ export function Sandbox({
     <style>${CSS_RESET}</style>
     ${headContent}
   </head>
-  <body class="${bodyClass}">
+  <body${!!bodyClass && ` class="${bodyClass}"`}>
     ${children}
     <script>
       function sendHeightToParent() {
