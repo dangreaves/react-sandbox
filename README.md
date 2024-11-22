@@ -4,6 +4,16 @@
 ![NPM License](https://img.shields.io/npm/l/%40storeforge%2Freact-sandbox)
 ![NPM Downloads](https://img.shields.io/npm/dm/%40storeforge%2Freact-sandbox)
 
+## Table of contents
+
+- [Motivation](#motivation)
+- [Install](#install)
+- [Usage](#usage)
+- [Adding content to `<head>`](#adding-content-to-head)
+- [Showing and hiding the iframe](#showing-and-hiding-the-iframe)
+
+## Motivation
+
 It is common for third party widgets to be distributed as a simple `<script>` tag, intended to be inserted somewhere on the page. These scripts often look for DOM nodes with particular ID's, and replace their content to mount widgets.
 
 These types of widgets are problematic for React SPA frameworks, as often navigating between pages does not trigger a document load. This means that the third party script tags are not re-executed, and the injected widget content is lost when navigating.
@@ -50,4 +60,47 @@ return (
     {`<script src="https://example.com/script.js"></script>`}
   </Sandbox>
 );
+```
+
+## Showing and hiding the iframe
+
+Some widgets may not load any content under certain conditions, in which case you may want to hide the iframe, or only show the iframe when the widget is "ready".
+
+This can be achieved using the the global `showSandbox` and `hideSandbox` methods within the iframe.
+
+- Call the `hideSandbox` method to set `display: none` on the iframe
+- Call the `showSandbox` method to remove `display: none` from the iframe
+- Add the `initialHidden` prop if you would like the iframe to begin hidden, until you call `showSandbox`
+
+In the example below, our widget is appending a paragraph to the body after 3 seconds. We have included a script which uses [MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) to check for the existence of the injected paragraph, each time the DOM nodes change.
+
+If the paragraph is found, the `showSandbox` method is called, thus showing the iframe. If the paragraph is removed by our widget, then the MutationObserver will be called again, and we can call `hideSandbox` to hide it again.
+
+```tsx
+<Sandbox initialHidden>
+  {`
+  {/* Our code */}
+  <script>
+    (() => {
+      function checkReady() {
+        const injectedContent = document.getElementById("injected");
+        if (!!injectedContent) showSandbox();
+        else hideSandbox();
+      }
+      const observer = new MutationObserver(checkReady);
+      observer.observe(document.body, { childList: true, subtree: true });
+    })()
+  </script>
+
+  {/* Third party code */}
+  <script>
+    setTimeout(() => {
+      const paragraph = document.createElement("p");
+      paragraph.id = "injected"
+      paragraph.textContent = "This is a dynamically inserted paragraph.";
+      document.body.appendChild(paragraph);
+    }, 3000)
+  </script>
+`}
+</Sandbox>
 ```
