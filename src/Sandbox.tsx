@@ -16,13 +16,13 @@ export interface SandboxProps {
    */
   headContent?: string;
   /**
-   * Optional class to apply to the <body> element inside the iframe.
-   */
-  bodyClass?: string;
-  /**
    * Optional class name for the iframe.
    */
   className?: string;
+  /**
+   * Optional class name to apply to the <body> element inside the iframe.
+   */
+  bodyClassName?: string;
   /**
    * If enabled, the iframe will be set to display: none until you call window.showSandbox()
    * from inside the iframe.
@@ -35,9 +35,9 @@ export interface SandboxProps {
 
 export function Sandbox({
   children,
-  bodyClass,
   className,
   headContent,
+  bodyClassName,
   initialHidden,
 }: SandboxProps) {
   const frameRef = useRef<HTMLIFrameElement | null>(null);
@@ -53,7 +53,7 @@ export function Sandbox({
     <style>${CSS_RESET}</style>
     ${headContent ?? ""}
   </head>
-  <body${!!bodyClass && ` class="${bodyClass}"`}>
+  <body${!!bodyClassName && ` class="${bodyClassName}"`}>
     <script>
       function showSandbox() {
         window.parent.postMessage({ eventType: "show" }, '*');
