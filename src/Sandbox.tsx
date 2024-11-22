@@ -20,6 +20,10 @@ export interface SandboxProps {
    */
   bodyClass?: string;
   /**
+   * Optional class name for the iframe.
+   */
+  className?: string;
+  /**
    * If enabled, the iframe will be set to display: none until you call window.showSandbox()
    * from inside the iframe.
    *
@@ -32,6 +36,7 @@ export interface SandboxProps {
 export function Sandbox({
   children,
   bodyClass,
+  className,
   headContent,
   initialHidden,
 }: SandboxProps) {
@@ -125,6 +130,7 @@ export function Sandbox({
     <iframe
       ref={frameRef}
       srcDoc={markup}
+      className={className}
       sandbox="allow-scripts"
       style={{
         width: "100%",
