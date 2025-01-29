@@ -31,9 +31,15 @@ export interface SandboxProps {
    * iframe node until something visible is rendered.
    */
   initialHidden?: boolean;
+  /**
+   * Sandbox attribute to apply to iframe.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox
+   */
+  sandbox?: string;
 }
 
 export function Sandbox({
+  sandbox,
   children,
   className,
   headContent,
@@ -130,8 +136,8 @@ export function Sandbox({
     <iframe
       ref={frameRef}
       srcDoc={markup}
+      sandbox={sandbox}
       className={className}
-      sandbox="allow-scripts"
       style={{
         width: "100%",
         border: "0",
