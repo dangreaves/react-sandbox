@@ -1,28 +1,12 @@
 import { useRef, useMemo, useEffect, useState } from "react";
 
-export interface SandboxProps {
-  /**
-   * HTML string to render in the body.
-   *
-   * This prop is not reactive. If you change the content, you must remount this
-   * component by changing the `key` prop.
-   */
-  children?: string;
-  /**
-   * Optional HTML string to render in the head.
-   *
-   * This prop is not reactive. If you change the content, you must remount this
-   * component by changing the `key` prop.
-   */
-  headContent?: string;
+import { buildSandboxContent, type ContentOptions } from "./utils";
+
+export interface SandboxProps extends ContentOptions {
   /**
    * Optional class name for the iframe.
    */
   className?: string;
-  /**
-   * Optional class name to apply to the <body> element inside the iframe.
-   */
-  bodyClassName?: string;
   /**
    * If enabled, the iframe will be set to display: none until you call window.showSandbox()
    * from inside the iframe.
@@ -46,11 +30,9 @@ export interface SandboxProps {
 export function Sandbox({
   src,
   sandbox,
-  children,
   className,
-  headContent,
-  bodyClassName,
   initialHidden,
+  ...contentOptions
 }: SandboxProps) {
   const frameRef = useRef<HTMLIFrameElement | null>(null);
 
@@ -60,45 +42,7 @@ export function Sandbox({
    */
   const markup = useMemo(() => {
     if (!!src) return;
-
-    return `
-<html>
-  <head>
-    <style>${CSS_RESET}</style>
-    ${headContent ?? ""}
-  </head>
-  <body${!!bodyClassName && ` class="${bodyClassName}"`}>
-    <script>
-      function showSandbox() {
-        window.parent.postMessage({ eventType: "show" }, '*');
-      }
-
-      function hideSandbox() {
-        window.parent.postMessage({ eventType: "hide" }, '*');
-      }
-    </script>
-    ${children}
-    <script>
-      (() => {
-        function sendHeightToParent() {
-          const height = document.documentElement.offsetHeight;
-          window.parent.postMessage({ eventType: "height", height }, '*');
-        }
-
-        // Send initial event on load.
-        window.onload = sendHeightToParent;
-
-        // Send event when window is resized.
-        window.onresize = sendHeightToParent;
-
-        // Send event when DOM nodes change.
-        const observer = new MutationObserver(sendHeightToParent);
-        observer.observe(document.body, { childList: true, subtree: true });
-      })();
-    </script>
-  </body>
-</html>
-`;
+    return buildSandboxContent(contentOptions);
   }, []);
 
   // Should the iframe be hidden?
@@ -155,18 +99,3 @@ export function Sandbox({
     />
   );
 }
-
-/**
- * CSS reset applied to iframe.
- */
-const CSS_RESET = `
-/* Apply border-box model to all elements */
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-/* Remove default margin */
-* {
-  margin: 0;
-}
-`;
