@@ -1,8 +1,8 @@
 > React component for "sandboxing" third party content within an iframe
 
-[![NPM Version](https://img.shields.io/npm/v/%40storeforge%2Freact-sandbox)](https://npmjs.com/@storeforge/react-sandbox)
-![NPM License](https://img.shields.io/npm/l/%40storeforge%2Freact-sandbox)
-![NPM Downloads](https://img.shields.io/npm/dm/%40storeforge%2Freact-sandbox)
+[![NPM Version](https://img.shields.io/npm/v/%40dangreaves%2Freact-sandbox)](https://npmjs.com/@dangreaves/react-sandbox)
+![NPM License](https://img.shields.io/npm/l/%40dangreaves%2Freact-sandbox)
+![NPM Downloads](https://img.shields.io/npm/dm/%40dangreaves%2Freact-sandbox)
 
 ## Table of contents
 
@@ -27,7 +27,7 @@ The `Sandbox` component automatically injects some JavaScript to efficiently res
 ## Install
 
 ```sh
-npm install @storeforgedev/react-sandbox
+npm install @dangreaves/react-sandbox
 ```
 
 ## Usage
@@ -37,7 +37,7 @@ Take the third party code they are asking you to drop into the site, and instead
 It is recommended to add a `key` prop to the component, as the content you pass to the child will only be rendered once. If you want to render something different, changing the `key` prop will force the iframe to properly unmount, and mount with the new content, thus re-executing scripts.
 
 ```tsx
-import { Sandbox } from "@storeforgedev/react-sandbox";
+import { Sandbox } from "@dangreaves/react-sandbox";
 
 return (
   <Sandbox key="unique">
@@ -51,7 +51,7 @@ return (
 If you need to add content to the `<head>` element in the sandbox, use the `headContent` prop.
 
 ```tsx
-import { Sandbox } from "@storeforgedev/react-sandbox";
+import { Sandbox } from "@dangreaves/react-sandbox";
 
 const headContent = [`<link href="/style.css" rel="stylesheet" />`].join("\n");
 

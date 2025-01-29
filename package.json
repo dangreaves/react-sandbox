@@ -1,9 +1,9 @@
 {
-  "name": "@storeforge/react-sandbox",
+  "name": "@dangreaves/react-sandbox",
   "version": "0.3.0",
   "description": "React component for \"sandboxing\" third party content within an iframe",
   "license": "MIT",
-  "repository": "storeforgedev/react-sandbox",
+  "repository": "dangreaves/react-sandbox",
   "type": "module",
   "files": [
     "dist"
