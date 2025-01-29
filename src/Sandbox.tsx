@@ -7,7 +7,7 @@ export interface SandboxProps {
    * This prop is not reactive. If you change the content, you must remount this
    * component by changing the `key` prop.
    */
-  children: string;
+  children?: string;
   /**
    * Optional HTML string to render in the head.
    *
@@ -36,9 +36,15 @@ export interface SandboxProps {
    * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#sandbox
    */
   sandbox?: string;
+  /**
+   * An iframe src attribute if you prefer to point to a URL.
+   * This will disable generation of the srcdoc.
+   */
+  src?: string;
 }
 
 export function Sandbox({
+  src,
   sandbox,
   children,
   className,
@@ -53,6 +59,8 @@ export function Sandbox({
    * the Sandbox component to force a remount if you change the child content.
    */
   const markup = useMemo(() => {
+    if (!!src) return;
+
     return `
 <html>
   <head>
@@ -134,6 +142,7 @@ export function Sandbox({
 
   return (
     <iframe
+      src={src}
       ref={frameRef}
       srcDoc={markup}
       sandbox={sandbox}
