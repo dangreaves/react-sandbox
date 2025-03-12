@@ -8,9 +8,11 @@ createRoot(document.getElementById("root")!).render(
     <Sandbox>
       {`
       <h1>Sandboxed Widget</h1>
-      <p id="message">This is a static message.</p>
+      <p id="message"></p>
       <script>
-        document.getElementById("message").innerText = "This is a dynamic message.";
+        setTimeout(() => {
+          document.getElementById("message").innerText = "This is a dynamic message.";
+        }, 2000);
       </script>
       `}
     </Sandbox>

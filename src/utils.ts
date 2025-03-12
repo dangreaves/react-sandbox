@@ -33,9 +33,31 @@ export function buildSandboxContent({
   <head>
     <style>${CSS_RESET}</style>
     ${headContent ?? ""}
-  </head>
-  <body${!!bodyClassName && ` class="${bodyClassName}"`}>
     <script>
+      (() => {
+        function sendHeightToParent() {
+          const height = document.documentElement.offsetHeight;
+          window.parent.postMessage({ eventType: "height", height }, '*');
+        }
+
+        window.addEventListener("load", function() {
+          // Send event when DOM nodes change.
+          const observer = new MutationObserver(sendHeightToParent);
+          observer.observe(document.body, { childList: true, subtree: true });
+
+          // Send initial event on load.
+          sendHeightToParent();
+
+          // Resend event 1 second after load, just in case the observer misses something.
+          setTimeout(() => sendHeightToParent(), 1000);
+        });
+
+        // Send event when window is resized.
+        window.addEventListener("resize", function() {
+          sendHeightToParent();
+        });
+      })();
+
       function showSandbox() {
         window.parent.postMessage({ eventType: "show" }, '*');
       }
@@ -44,25 +66,9 @@ export function buildSandboxContent({
         window.parent.postMessage({ eventType: "hide" }, '*');
       }
     </script>
+  </head>
+  <body${!!bodyClassName && ` class="${bodyClassName}"`}>
     ${children}
-    <script>
-      (() => {
-        function sendHeightToParent() {
-          const height = document.documentElement.offsetHeight;
-          window.parent.postMessage({ eventType: "height", height }, '*');
-        }
-
-        // Send initial event on load.
-        window.onload = sendHeightToParent;
-
-        // Send event when window is resized.
-        window.onresize = sendHeightToParent;
-
-        // Send event when DOM nodes change.
-        const observer = new MutationObserver(sendHeightToParent);
-        observer.observe(document.body, { childList: true, subtree: true });
-      })();
-    </script>
   </body>
 </html>
   `;
